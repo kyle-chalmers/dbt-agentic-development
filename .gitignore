@@ -1,0 +1,39 @@
+# Environment variables
+.env
+
+# Internal/private files
+.internal/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# dbt
+target/
+dbt_packages/
+logs/
+profiles.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.mcp.json
