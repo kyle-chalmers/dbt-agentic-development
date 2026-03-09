@@ -71,7 +71,7 @@ Together, Claude Code writes dbt models that follow your project's patterns and 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/kylechalmers/dbt-agentic-development.git
+git clone https://github.com/kyle-chalmers/dbt-agentic-development.git
 cd dbt-agentic-development
 ```
 
