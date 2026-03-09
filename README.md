@@ -6,33 +6,7 @@
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Claude Code                          │
-│                                                             │
-│  ┌─────────────────────┐    ┌────────────────────────────┐  │
-│  │  dbt Agent Skills   │    │     dbt MCP Server         │  │
-│  │                     │    │                            │  │
-│  │  - Naming rules     │    │  - DAG lineage             │  │
-│  │  - ref() patterns   │    │  - Column schemas          │  │
-│  │  - Test conventions │    │  - Test coverage           │  │
-│  │  - Model layers     │    │  - Source definitions      │  │
-│  └────────┬────────────┘    └─────────────┬──────────────┘  │
-│           │    Conventions                 │  Live metadata  │
-│           └──────────┬─────────────────────┘                │
-│                      │                                      │
-└──────────────────────┼──────────────────────────────────────┘
-                       │
-                       ▼
-              ┌────────────────┐
-              │  jaffle_shop   │
-              │  (DuckDB)      │
-              │                │
-              │  models/       │
-              │  tests/        │
-              │  sources/      │
-              └────────────────┘
-```
+![Architecture overview — Claude Code with dbt Agent Skills and dbt MCP Server connecting to jaffle_shop](./images/diagram.png)
 
 ## The Problem
 
@@ -168,8 +142,9 @@ dbt-agentic-development/
 ├── demo/
 │   └── demo_prompt.md        # Full demo prompt with recording notes
 ├── output/                   # Before/after screenshots during recording
-├── diagram.excalidraw        # Architecture overview (editable)
-└── diagram.png               # Architecture overview (rendered)
+├── images/
+│   └── diagram.png           # Architecture overview (rendered)
+└── diagram.excalidraw        # Architecture overview (editable)
 ```
 
 > **Note:** jaffle_shop is NOT included in this repo. You initialize it yourself (`dbt init jaffle_shop`) during setup. This keeps the repo focused on the Claude Code + dbt tooling configuration.
