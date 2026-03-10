@@ -6,7 +6,7 @@
 
 ## Architecture
 
-![Architecture overview — dbt project feeding into dbt Agent Skills and dbt MCP Server, which provide conventions and live metadata to AI coding assistants, producing convention-aware dbt models](./images/diagram.png)
+<img src="./images/diagram.png" alt="Architecture overview — dbt project feeding into dbt Agent Skills and dbt MCP Server, which provide conventions and live metadata to AI coding assistants, producing convention-aware dbt models" width="1965">
 
 ## What This Covers
 
