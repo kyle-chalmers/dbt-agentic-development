@@ -1,44 +1,39 @@
 # dbt Agentic Development
 
-**Give Claude Code a dbt brain — dbt Agent Skills for conventions, dbt MCP Server for live metadata.**
+**Set up AI-powered dbt development with dbt Agent Skills and dbt MCP Server.**
 
-> Built as part of a [KC Labs AI](https://www.youtube.com/@kclabsai) YouTube video. The video walks through the full before/after demo showing how adding dbt-specific context transforms Claude Code's output from generic SQL into convention-aware, lineage-informed dbt models.
+> Built as part of a [KC Labs AI](https://www.youtube.com/@kclabsai) YouTube video. The video walks through the full setup from installing dbt to building convention-aware, lineage-informed models with Claude Code.
 
 ## Architecture
 
-![Architecture overview — Claude Code with dbt Agent Skills and dbt MCP Server connecting to jaffle_shop](./images/diagram.png)
+![Architecture overview — dbt project feeding into dbt Agent Skills and dbt MCP Server, which provide conventions and live metadata to AI coding assistants, producing convention-aware dbt models](./images/diagram.png)
 
-## The Problem
+## What This Covers
 
-Claude Code writes valid SQL. But without project context, it ignores dbt conventions:
+This repo is the companion to a practical setup tutorial showing how to use AI coding assistants with dbt. You'll go from zero to AI-powered dbt development:
 
-- Hardcodes table names instead of using `ref()`
-- Uses generic names like `orders_customers` instead of `stg_jaffle_shop__orders`
-- Skips schema YAML files and test definitions
-- Doesn't know what's already built in your DAG
+1. Install dbt with DuckDB (local, free)
+2. Initialize jaffle_shop (dbt's canonical demo project)
+3. Add dbt Agent Skills (conventions for your AI assistant)
+4. Configure the dbt MCP Server (live project metadata)
+5. Build models with Claude Code and see the difference
 
-The result compiles — but it breaks lineage, naming patterns, and test coverage.
-
-## The Fix
-
-Two tools close the context gap:
+## Two Tools, One Setup
 
 | Tool | What It Provides | How It Works |
 | ---- | ---------------- | ------------ |
 | **dbt Agent Skills** | Conventions — naming, ref(), tests, model layers | Installs rules into Claude Code's CLAUDE.md |
 | **dbt MCP Server** | Live metadata — DAG lineage, schemas, test coverage | Connects Claude Code to your dbt project at runtime |
 
-Together, Claude Code writes dbt models that follow your project's patterns and respect existing lineage.
+Together, your AI coding assistant writes dbt models that follow project conventions and respect existing lineage.
 
 ## Prerequisites
 
 | Tool | Version | Purpose |
 | ---- | ------- | ------- |
 | Python | 3.10+ | dbt runtime |
-| dbt Core | 1.9+ | Model compilation and execution |
-| dbt-duckdb | 1.9+ | Local database adapter |
-| Claude Code | Latest | AI coding assistant |
 | Node.js | 18+ | npx for installing skills and MCP server |
+| Claude Code | Latest | AI coding assistant |
 
 ## Setup
 
@@ -49,7 +44,7 @@ git clone https://github.com/kyle-chalmers/dbt-agentic-development.git
 cd dbt-agentic-development
 ```
 
-### 2. Install Python dependencies
+### 2. Install dbt
 
 ```bash
 python -m venv .venv
@@ -75,7 +70,7 @@ dbt test
 npx skills add dbt-labs/dbt-agent-skills
 ```
 
-This adds dbt conventions to your Claude Code configuration. Review the additions in your CLAUDE.md.
+This adds dbt conventions to your AI coding assistant's configuration. Review the additions in your CLAUDE.md.
 
 ### 5. Configure dbt MCP Server
 
@@ -85,45 +80,42 @@ claude mcp add dbt -- npx -y @anthropic-ai/dbt-mcp@latest
 
 This connects Claude Code to your dbt project's live metadata (lineage, schemas, tests).
 
-## Demo Prompt
+### 6. Try It Out
 
-<details>
-<summary>Click to expand the full demo prompt</summary>
+Ask Claude Code to build a model:
 
-```xml
-<context>
-  <project>jaffle_shop — dbt's canonical demo project</project>
-  <adapter>DuckDB (local, zero setup)</adapter>
-  <goal>Show before/after quality of Claude Code's dbt output</goal>
-</context>
-
-<before>
-  <!-- Run this BEFORE installing dbt Agent Skills or MCP Server -->
-  Add a staging model that joins raw orders to raw customers so we have
-  customer info on each order. Include appropriate tests.
-</before>
-
-<after>
-  <!-- Run this AFTER installing dbt Agent Skills + MCP Server -->
-  Add a staging model that joins raw orders to raw customers so we have
-  customer info on each order. Include appropriate tests.
-</after>
-
-<bonus>
-  Audit the test coverage across the jaffle_shop project. Identify gaps,
-  but don't re-test pass-through columns that are already tested upstream.
-</bonus>
+```
+Add a staging model that joins raw orders to raw customers so we have
+customer info on each order. Include appropriate tests.
 ```
 
-</details>
+Then ask for a lineage-aware test audit:
 
-The full prompt with recording notes is in [`demo/demo_prompt.md`](demo/demo_prompt.md).
+```
+Audit the test coverage across the jaffle_shop project. Identify gaps,
+but don't re-test pass-through columns that are already tested upstream.
+```
+
+The full tutorial prompts are in [`demo/demo_prompt.md`](demo/demo_prompt.md).
+
+## Multi-Tool Compatibility
+
+dbt Agent Skills work with multiple AI coding assistants:
+
+| Tool | Installation |
+| ---- | ------------ |
+| Claude Code | `npx skills add dbt-labs/dbt-agent-skills` |
+| Cursor | `npx skills add dbt-labs/dbt-agent-skills` |
+| Windsurf | `npx skills add dbt-labs/dbt-agent-skills` |
+| Codex | `npx skills add dbt-labs/dbt-agent-skills` |
+
+The dbt MCP Server is currently Claude Code specific (`claude mcp add`).
 
 ## Key Definitions
 
 | Term | Definition |
 | ---- | ---------- |
-| **dbt Agent Skills** | A package of dbt conventions (naming, ref patterns, testing rules) that installs into Claude Code's context via `npx skills add` |
+| **dbt Agent Skills** | A package of dbt conventions (naming, ref patterns, testing rules) that installs into your AI coding assistant's context via `npx skills add` |
 | **dbt MCP Server** | A Model Context Protocol server that gives Claude Code live access to your dbt project's DAG lineage, column schemas, and test coverage |
 | **jaffle_shop** | dbt's canonical demo project — a fake e-commerce dataset with customers, orders, and payments |
 | **ref()** | dbt's function for referencing other models — enables automatic lineage tracking |
@@ -134,14 +126,15 @@ The full prompt with recording notes is in [`demo/demo_prompt.md`](demo/demo_pro
 
 ```
 dbt-agentic-development/
-├── README.md                 # This file — overview, setup, demo prompt
+├── README.md                 # This file — overview, setup, tutorial prompts
 ├── CLAUDE.md                 # AI context for Claude Code sessions
+├── AGENTS.md                 # Agent instructions (referenced by CLAUDE.md)
 ├── .env.example              # Environment variable template
 ├── .gitignore                # Excludes .env, .internal/, dbt artifacts
 ├── requirements.txt          # dbt-core, dbt-duckdb
 ├── demo/
-│   └── demo_prompt.md        # Full demo prompt with recording notes
-├── output/                   # Before/after screenshots during recording
+│   └── demo_prompt.md        # Tutorial prompts with recording notes
+├── output/                   # Screenshots captured during recording
 └── images/
     ├── diagram.excalidraw    # Architecture overview (editable)
     └── diagram.png           # Architecture overview (rendered)
