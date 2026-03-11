@@ -183,7 +183,7 @@ No cloud accounts, API keys, or subscriptions required.
 ## Resources
 
 - [dbt Agent Skills](https://github.com/dbt-labs/dbt-agent-skills) — Convention package for AI coding assistants
-- [dbt MCP Server](https://github.com/anthropic-ai/dbt-mcp) — Model Context Protocol server for dbt
+- [dbt MCP Server](https://github.com/dbt-labs/dbt-mcp) — Model Context Protocol server for dbt
 - [dbt Core Documentation](https://docs.getdbt.com/) — Official dbt docs
 - [jaffle_shop](https://github.com/dbt-labs/jaffle_shop) — dbt's demo project
 - [DuckDB](https://duckdb.org/) — In-process analytical database
