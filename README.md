@@ -27,6 +27,32 @@ This repo is the companion to a practical setup tutorial showing how to use AI c
 
 Together, your AI coding assistant writes dbt models that follow project conventions and respect existing lineage.
 
+## CLI vs MCP: How They Differ
+
+You might wonder: can't Claude just run `dbt` commands in the terminal? Mostly yes — but the MCP server changes *how results reach Claude*.
+
+| Capability | dbt CLI | dbt MCP Server |
+| ---------- | ------- | -------------- |
+| Run / test / build | Runs and streams log output | Runs and returns `"OK"` |
+| List resources | `dbt ls` → flat FQN strings | `mcp__dbt__list` → same flat FQN strings |
+| Compile SQL | `dbt compile` → **prints rendered SQL** (better for inspection) | `mcp__dbt__compile` → returns `"OK"` |
+| Preview data | `dbt show` → formatted table (better for humans) | `mcp__dbt__show` → structured JSON (better for Claude) |
+| Column schemas + tests | Requires parsing `target/manifest.json` | `get_node_details_dev` → full structured JSON per node |
+| DAG lineage | `dbt ls --output json` → flat list, graph must be reconstructed | `get_lineage_dev` → nested parent/child graph |
+| dbt docs search | No CLI equivalent | `search_product_docs` |
+
+**The key difference:** CLI output is formatted for humans reading a terminal. MCP returns structured data directly into Claude's context — Claude can traverse a lineage graph, look up column types, or check test coverage without parsing text.
+
+This matters most for context-heavy tasks like auditing test coverage across a DAG. With MCP, Claude gets a nested graph of parents and children as a JSON object. With CLI, it gets a flat list of FQN strings and has to reconstruct the relationships manually — workable, but error-prone at scale.
+
+**When to use each:**
+
+| Reach for the CLI when… | Reach for MCP when… |
+| ----------------------- | ------------------- |
+| Inspecting compiled SQL — `dbt compile` prints the rendered SQL; MCP just returns `"OK"` | Traversing lineage — `get_lineage_dev` returns a nested graph; CLI returns a flat list |
+| Diagnosing failures — CLI streams per-model status, timing, and PASS/WARN/ERROR counts | Looking up column schemas, data types, or test coverage for a specific model |
+| Listing resources — output is identical either way, CLI is simpler | Searching dbt docs — `search_product_docs` has no CLI equivalent |
+
 ## Prerequisites
 
 | Tool | Version | Purpose |

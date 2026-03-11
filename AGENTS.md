@@ -60,6 +60,47 @@ What it provides:
 
 > **Important:** If the MCP server only exposes docs tools, it can't find the dbt project or binary. Set both `DBT_PROJECT_DIR` (absolute path to the directory containing `dbt_project.yml`) and `DBT_PATH` (output of `which dbt`) in `.mcp.json`. Both are required for the CLI and codegen tools to load — the server does not auto-discover either.
 
+#### CLI vs MCP: Output Comparison
+
+| Capability | dbt CLI | dbt MCP Server |
+| ---------- | ------- | -------------- |
+| Run / test / build | Streams full log — per-model status, timing, PASS/WARN/ERROR counts | Returns `"OK"` |
+| List resources | `dbt ls` → flat FQN strings | `mcp__dbt__list` → same flat FQN strings |
+| Compile SQL | `dbt compile` → **prints rendered SQL** | `mcp__dbt__compile` → returns `"OK"` |
+| Preview data | `dbt show` → formatted table | `mcp__dbt__show` → structured JSON |
+| Column schemas + tests | Requires parsing `target/manifest.json` (partial) | `get_node_details_dev` → full structured JSON per node |
+| DAG lineage | `dbt ls --output json` → flat NDJSON, reconstruct graph manually | `get_lineage_dev` → nested parent/child graph |
+| dbt docs search | No CLI equivalent | `search_product_docs` |
+
+#### When to Use CLI vs MCP
+
+Both are available at all times. Choose based on what gives better results:
+
+| Use CLI when… | Use MCP when… |
+| ------------- | ------------- |
+| Inspecting compiled SQL (`dbt compile` prints it; MCP just returns `"OK"`) | Querying lineage (`get_lineage_dev` returns a nested graph; CLI returns a flat list) |
+| Diagnosing run/test failures (CLI streams per-model status, timing, PASS/WARN/ERROR counts; MCP returns `"OK"`) | Looking up column schemas, data types, or test coverage for a specific model (`get_node_details_dev`) |
+| Listing resources — output is identical either way | Searching dbt product docs (`search_product_docs` — no CLI equivalent) |
+
+#### MCP Fallback
+
+If the MCP server is unavailable or not responding, fall back to equivalent dbt CLI commands:
+
+| MCP Tool | CLI Fallback | Notes |
+| -------- | ------------ | ----- |
+| `mcp__dbt__run` | `dbt run --select <model>` | |
+| `mcp__dbt__test` | `dbt test --select <model>` | |
+| `mcp__dbt__build` | `dbt build --select <model>` | |
+| `mcp__dbt__compile` | `dbt compile --select <model>` | CLI actually prints rendered SQL — more useful for inspection |
+| `mcp__dbt__list` | `dbt ls` | Identical output |
+| `mcp__dbt__show` | `dbt show --select <model> --limit N` | CLI output is a formatted table, not JSON |
+| `mcp__dbt__parse` | `dbt parse` | CLI is silent on success |
+| `get_node_details_dev` | `dbt ls --select <model> --output json --output-keys unique_id name resource_type columns depends_on config` | Partial — missing descriptions, data_type, patch_path, tests list |
+| `get_lineage_dev` | `dbt ls --select +<model>+ --output json --output-keys unique_id name resource_type depends_on` | Returns flat NDJSON — reconstruct graph from `depends_on.nodes`; no children direction |
+| `search_product_docs` | No CLI equivalent | Use web search |
+
+> **Note:** CLI fallbacks for `get_node_details_dev` and `get_lineage_dev` return partial or unstructured data. Lineage-aware and metadata-heavy tasks (e.g. test coverage audits) are less reliable without MCP.
+
 ### DuckDB
 
 - In-process analytical database — no server to install or manage
@@ -129,15 +170,13 @@ No cloud credentials needed — DuckDB runs entirely local.
 
 The demo follows a progressive tutorial structure — each step builds on the previous one:
 
-0. **Create Ticket** — Azure DevOps work item to track the demo build
 1. **What + Why** — Quick overview of dbt Agent Skills (conventions) and dbt MCP Server (live metadata), and why both matter together
 2. **Install dbt** — `pip install dbt-core dbt-duckdb`
 3. **Confirm Baseline** — `dbt run` + `dbt test` from repo root to verify jaffle_shop works
 4. **Install dbt Agent Skills** — `npx skills add dbt-labs/dbt-agent-skills` — show what gets added to CLAUDE.md
 5. **Configure dbt MCP Server** — `claude mcp add dbt -- uvx dbt-mcp` — show what metadata becomes available
 6. **Build with AI Context** — Ask Claude Code to add a staging model — show convention-aware output (correct naming, ref(), proper tests)
-7. **Lineage-Aware Test Audit** — "Audit test coverage — don't re-test pass-through columns already tested upstream" — the aha moment
-8. **Close Ticket** — Update work item to Done with summary
+7. **Lineage-Aware Test Audit + Enhancement** — Audit test coverage with lineage awareness, implement missing tests, then propose and build a meaningful enhancement using the new columns
 
 ## Operating Principles
 
