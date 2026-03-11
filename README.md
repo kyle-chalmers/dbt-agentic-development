@@ -12,8 +12,8 @@
 
 This repo is the companion to a practical setup tutorial showing how to use AI coding assistants with dbt. You'll go from zero to AI-powered dbt development:
 
-1. Install dbt with DuckDB (local, free)
-2. Initialize jaffle_shop (dbt's canonical demo project)
+1. Clone the repo (includes jaffle_shop, dbt's canonical demo project)
+2. Install dbt with DuckDB (local, free)
 3. Add dbt Agent Skills (conventions for your AI assistant)
 4. Configure the dbt MCP Server (live project metadata)
 5. Build models with Claude Code and see the difference
@@ -44,27 +44,18 @@ git clone https://github.com/kyle-chalmers/dbt-agentic-development.git
 cd dbt-agentic-development
 ```
 
-### 2. Install dbt
+### 2. Install dbt and verify the project
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-```
 
-### 3. Initialize jaffle_shop with DuckDB
-
-```bash
-dbt init jaffle_shop
-# When prompted:
-#   - Which database: duckdb
-#   - path: jaffle_shop.duckdb
-cd jaffle_shop
 dbt run
 dbt test
 ```
 
-### 4. Install dbt Agent Skills
+### 3. Install dbt Agent Skills
 
 ```bash
 npx skills add dbt-labs/dbt-agent-skills
@@ -72,15 +63,17 @@ npx skills add dbt-labs/dbt-agent-skills
 
 This adds dbt conventions to your AI coding assistant's configuration. Review the additions in your CLAUDE.md.
 
-### 5. Configure dbt MCP Server
+### 4. Configure dbt MCP Server
 
 ```bash
-claude mcp add dbt -- npx -y @anthropic-ai/dbt-mcp@latest
+claude mcp add dbt -e DBT_PROJECT_DIR=$(pwd) -e DBT_PATH=$(which dbt) -- uvx dbt-mcp
 ```
 
-This connects Claude Code to your dbt project's live metadata (lineage, schemas, tests).
+This connects Claude Code to your dbt project's live metadata (lineage, schemas, tests). The `-e` flags tell the server where your dbt project and binary are — both are required for the CLI and codegen tools to load.
 
-### 6. Try It Out
+> **Troubleshooting:** If the MCP server only shows docs tools (Search/Get Product Docs), the env vars are missing or incorrect. Verify with `which dbt` and check that you ran the command from the repo root. You can also edit `.mcp.json` directly — see the [AGENTS.md](AGENTS.md) troubleshooting note.
+
+### 5. Try It Out
 
 Ask Claude Code to build a model:
 
@@ -126,6 +119,16 @@ The dbt MCP Server is currently Claude Code specific (`claude mcp add`).
 
 ```
 dbt-agentic-development/
+├── dbt_project.yml           # dbt project config (jaffle_shop)
+├── models/                   # dbt models (example/ included)
+├── seeds/                    # dbt seed files
+├── analyses/                 # dbt analyses
+├── macros/                   # dbt macros
+├── snapshots/                # dbt snapshots
+├── tests/                    # dbt tests
+├── .agents/                  # dbt Agent Skills (installed via npx)
+├── .claude/skills/           # Skill symlinks → .agents/skills/
+├── skills-lock.json          # Skills lock file
 ├── README.md                 # This file — overview, setup, tutorial prompts
 ├── CLAUDE.md                 # AI context for Claude Code sessions
 ├── AGENTS.md                 # Agent instructions (referenced by CLAUDE.md)
@@ -134,13 +137,10 @@ dbt-agentic-development/
 ├── requirements.txt          # dbt-core, dbt-duckdb
 ├── demo/
 │   └── demo_prompt.md        # Tutorial prompts with recording notes
-├── output/                   # Screenshots captured during recording
 └── images/
     ├── diagram.excalidraw    # Architecture overview (editable)
     └── diagram.png           # Architecture overview (rendered)
 ```
-
-> **Note:** jaffle_shop is NOT included in this repo. You initialize it yourself (`dbt init jaffle_shop`) during setup. This keeps the repo focused on the Claude Code + dbt tooling configuration.
 
 ## Cost
 

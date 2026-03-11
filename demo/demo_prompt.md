@@ -6,24 +6,23 @@ This demo follows a **progressive tutorial** structure. Each step builds on the 
 
 ---
 
-## Step 1: Install dbt and Initialize jaffle_shop
+## Step 1: Install dbt and Verify the Project
 
-> Run these commands to set up the dbt project from scratch.
+> Clone the repo and install dbt. The jaffle_shop project is already included at the repo root.
 
 ```bash
-python -m venv .venv
+git clone https://github.com/kyle-chalmers/dbt-agentic-development.git
+cd dbt-agentic-development
+
+python3 -m venv .venv
 source .venv/bin/activate
 pip install dbt-core dbt-duckdb
 
-dbt init jaffle_shop
-# Choose: duckdb adapter, path: jaffle_shop.duckdb
-
-cd jaffle_shop
 dbt run
 dbt test
 ```
 
-**What to show:** The full installation flow, dbt init prompts, and successful `dbt run` + `dbt test` output confirming the baseline works.
+**What to show:** The installation flow and successful `dbt run` + `dbt test` output confirming the baseline works.
 
 ---
 
@@ -36,7 +35,7 @@ dbt test
 npx skills add dbt-labs/dbt-agent-skills
 
 # Connect Claude Code to live project metadata
-claude mcp add dbt -- npx -y @anthropic-ai/dbt-mcp@latest
+claude mcp add dbt -e DBT_PROJECT_DIR=$(pwd) -e DBT_PATH=$(which dbt) -- uvx dbt-mcp
 ```
 
 **What to show:** Both commands running, then open CLAUDE.md to show the conventions that were added. Optionally show the MCP connection confirming in Claude Code.
@@ -78,3 +77,4 @@ that are already tested in upstream models.
 - **Quick context, not full "before"**: When showing the model output in Step 3, briefly mention (15 seconds) what generic output would look like without these tools. No need for a full before/after comparison.
 - **Multi-tool mention**: After the demo, verbally note that dbt Agent Skills also work with Cursor, Windsurf, and Codex.
 - **Total demo time**: Steps 1-4 should take roughly 10-12 minutes on screen.
+
