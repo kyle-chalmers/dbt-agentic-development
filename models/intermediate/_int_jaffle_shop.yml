@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: int_orders_enriched
+    description: >
+      Orders joined to customer details. One record per order, enriched with
+      the placing customer's name, email, country, order amount, and payment method.
+    columns:
+      - name: order_id
+        description: "Primary key — unique identifier for each order."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Foreign key to stg_jaffle_shop__customers. Not re-tested — already covered upstream."
+      - name: status
+        description: "Current fulfillment status of the order. Not re-tested — already covered upstream."
+      - name: amount
+        description: "Total order amount in USD. Not re-tested — already covered upstream."
+      - name: payment_method
+        description: "Payment method used for the order. Not re-tested — already covered upstream."
+      - name: email
+        description: "Customer email address. Not re-tested — already covered upstream."
+      - name: country
+        description: "Country where the customer is based. Not re-tested — already covered upstream."
