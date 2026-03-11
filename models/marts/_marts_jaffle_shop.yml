@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: >
+      One record per customer. Aggregates all order history from int_orders_enriched
+      to produce lifetime value metrics, preferred payment method, completed order stats,
+      return counts, and a revenue-based customer segment.
+      Customer identity columns are not re-tested here — already covered upstream
+      in stg_jaffle_shop__customers.
+    columns:
+      - name: customer_id
+        description: "Primary key — unique identifier for each customer."
+        data_tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: "Customer first name. Not re-tested — already covered upstream."
+      - name: last_name
+        description: "Customer last name. Not re-tested — already covered upstream."
+      - name: email
+        description: "Customer email address. Not re-tested — already covered upstream."
+      - name: country
+        description: "Country where the customer is based. Not re-tested — already covered upstream."
+      - name: total_orders
+        description: "Total number of orders placed by this customer."
+        data_tests:
+          - not_null
+      - name: total_revenue
+        description: "Sum of all order amounts, rounded to 2 decimal places."
+        data_tests:
+          - not_null
+      - name: avg_order_value
+        description: "Average order amount, rounded to 2 decimal places."
+      - name: first_order_date
+        description: "Date of the customer's earliest order."
+      - name: most_recent_order_date
+        description: "Date of the customer's most recent order."
+      - name: preferred_payment_method
+        description: "Most frequently used payment method across all orders."
+      - name: completed_orders
+        description: "Number of orders with status = 'completed'."
+      - name: completed_revenue
+        description: >
+          Sum of amounts for completed orders only, rounded to 2 decimal places.
+          NULL when the customer has no completed orders.
+      - name: return_count
+        description: "Number of orders with status in ('return_pending', 'returned')."
+      - name: customer_segment
+        description: "Revenue tier: Gold (>= $1000 lifetime), Silver (>= $500), Bronze (< $500)."
+        data_tests:
+          - accepted_values:
+              values: ['Gold', 'Silver', 'Bronze']

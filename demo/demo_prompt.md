@@ -50,7 +50,7 @@ claude mcp add dbt -e DBT_PROJECT_DIR=$(pwd) -e DBT_PATH=$(which dbt) -- uvx dbt
 I'm working in the jaffle_shop dbt project with a DuckDB adapter.
 
 Add a staging model that joins raw orders to raw customers so we have
-customer info on each order. Include appropriate tests.
+customer info on each order. Include appropriate tests and run them yourself. Report back to me the findings.
 ```
 
 **What to show:** Claude Code generating the model with correct naming (stg_[source]__[entity]), ref() usage, and proper YAML tests. Run `dbt run` and `dbt test` on the new model to confirm it works.
@@ -62,19 +62,17 @@ customer info on each order. Include appropriate tests.
 > Ask Claude Code to audit test coverage using its lineage knowledge.
 
 ```
-Audit the test coverage across the jaffle_shop project. Identify gaps
-in test coverage, but don't recommend re-testing pass-through columns
-that are already tested in upstream models.
+Audit the test coverage across the jaffle_shop project.
+For each model, use lineage to check what's already tested in upstream models.
+Don't re-test pass-through columns that are already covered.
+Show me which tests exist upstream so I can see you've checked.
+Then implement the missing tests where genuine gaps exist.
+Finally, based on the new data now available (amounts, payment methods, countries),
+suggest and build one meaningful enhancement, such as a mart model with revenue
+aggregation or customer segmentation, that wasn't possible before.
 ```
 
-**What to show:** Claude Code checking upstream test coverage via MCP and correctly skipping redundant tests. Highlight that it knows `customer_id` is already tested upstream.
+**What to show:** Claude surfacing which columns are already tested upstream (lineage awareness made visible), implementing only the genuine gaps, then proposing and building a concrete enhancement — such as `fct_orders` with revenue aggregation or `dim_customers` with country segmentation.
 
 ---
-
-## Recording Notes
-
-- **Friction is content**: If something breaks during installation, show it. The "learning together" angle means honest setup walkthroughs, not polished after-the-fact demos.
-- **Quick context, not full "before"**: When showing the model output in Step 3, briefly mention (15 seconds) what generic output would look like without these tools. No need for a full before/after comparison.
-- **Multi-tool mention**: After the demo, verbally note that dbt Agent Skills also work with Cursor, Windsurf, and Codex.
-- **Total demo time**: Steps 1-4 should take roughly 10-12 minutes on screen.
 
