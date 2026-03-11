@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "skills": {
+    "adding-dbt-unit-test": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "d69e67f67f478a7747f8fb8123810ff78f61e1d3b3ddca95a172d6651a558d9a"
+    },
+    "answering-natural-language-questions-with-dbt": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "15cefed9def8313f8aec0f3b2c1ce575f544922841b1e6483c48bc4814654b3c"
+    },
+    "auditing-skills": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "6ce33649f3bdb53c9993f67c0e908ddbcedd5c5190343644f2c109462cea4519"
+    },
+    "building-dbt-semantic-layer": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "74dc77546d58d6f565ced91e355ecb1fc148b8b63311e1a9a503c29c38a3b4f8"
+    },
+    "configuring-dbt-mcp-server": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "b246b43e91a38ca345943a651f21184631273d9fd68ca4664b427ed04274f5ae"
+    },
+    "fetching-dbt-docs": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "c1724483e3b82a88cdb76d984842f5373d3c46a1f72ed48f596521b25adecf57"
+    },
+    "migrating-dbt-core-to-fusion": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "c6be594dcaf5cd2ce310e0fb6dfee2b3aee1cd5fbb00eaa253c9d06553b359b4"
+    },
+    "migrating-dbt-project-across-platforms": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "68dd5611c884d9cc4210de7863f2a51263df00671d5d2aca51c60b5621f45fcd"
+    },
+    "running-dbt-commands": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "209219f2362203a86b2f9181c8853ca248e4e37a88f676cd39265d37c072e1ea"
+    },
+    "troubleshooting-dbt-job-errors": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "cd2f90033079b74c37387c890c281f46da31141db39e95cf902985570c950a05"
+    },
+    "using-dbt-for-analytics-engineering": {
+      "source": "dbt-labs/dbt-agent-skills",
+      "sourceType": "github",
+      "computedHash": "ac34927051f1bf32c56a66aab21f1ffe94ec6702876952bc08ceb5159d8c1eea"
+    }
+  }
+}

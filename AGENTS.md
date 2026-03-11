@@ -12,7 +12,7 @@ This is a demo repository for a **KC Labs AI YouTube video** — a practical set
 
 > **Claude Code**: If `.internal/OWNER_CONFIG.md` exists, read it at the start of each session and use those concrete values (org URLs, resource names, emails) for all commands.
 >
-> **Viewers cloning this repo**: Create your own `.internal/OWNER_CONFIG.md` with your personal values (DevOps org, project, email). Then follow the README setup steps to initialize jaffle_shop and install the dbt tooling.
+> **Viewers cloning this repo**: Create your own `.internal/OWNER_CONFIG.md` with your personal values (DevOps org, project, email). Then follow the README setup steps to install dbt and the AI tooling.
 
 ## Available Tools
 
@@ -46,7 +46,7 @@ What it provides:
 Connects Claude Code to live dbt project metadata:
 
 ```bash
-claude mcp add dbt -- npx -y @anthropic-ai/dbt-mcp@latest
+claude mcp add dbt -e DBT_PROJECT_DIR=$(pwd) -e DBT_PATH=$(which dbt) -- uvx dbt-mcp
 ```
 
 What it provides:
@@ -55,12 +55,16 @@ What it provides:
 - Existing test coverage (what's already tested)
 - Source definitions and freshness
 - Project configuration and variables
+- dbt CLI tools (run, test, compile, list, build, show, parse)
+- Codegen tools (generate model YAML, source YAML, staging models)
+
+> **Important:** If the MCP server only exposes docs tools, it can't find the dbt project or binary. Set both `DBT_PROJECT_DIR` (absolute path to the directory containing `dbt_project.yml`) and `DBT_PATH` (output of `which dbt`) in `.mcp.json`. Both are required for the CLI and codegen tools to load — the server does not auto-discover either.
 
 ### DuckDB
 
 - In-process analytical database — no server to install or manage
 - Configured via `profiles.yml` (created during `dbt init`)
-- Database file: `jaffle_shop.duckdb` (auto-created in project directory)
+- Database file: `dev.duckdb` (auto-created in project directory)
 
 ### Azure DevOps (Ticket Tracking)
 
@@ -127,10 +131,10 @@ The demo follows a progressive tutorial structure — each step builds on the pr
 
 0. **Create Ticket** — Azure DevOps work item to track the demo build
 1. **What + Why** — Quick overview of dbt Agent Skills (conventions) and dbt MCP Server (live metadata), and why both matter together
-2. **Install dbt** — `pip install dbt-core dbt-duckdb`, `dbt init jaffle_shop` with DuckDB adapter
-3. **Confirm Baseline** — `dbt run` + `dbt test` to verify jaffle_shop works
+2. **Install dbt** — `pip install dbt-core dbt-duckdb`
+3. **Confirm Baseline** — `dbt run` + `dbt test` from repo root to verify jaffle_shop works
 4. **Install dbt Agent Skills** — `npx skills add dbt-labs/dbt-agent-skills` — show what gets added to CLAUDE.md
-5. **Configure dbt MCP Server** — `claude mcp add dbt -- npx -y @anthropic-ai/dbt-mcp@latest` — show what metadata becomes available
+5. **Configure dbt MCP Server** — `claude mcp add dbt -- uvx dbt-mcp` — show what metadata becomes available
 6. **Build with AI Context** — Ask Claude Code to add a staging model — show convention-aware output (correct naming, ref(), proper tests)
 7. **Lineage-Aware Test Audit** — "Audit test coverage — don't re-test pass-through columns already tested upstream" — the aha moment
 8. **Close Ticket** — Update work item to Done with summary
