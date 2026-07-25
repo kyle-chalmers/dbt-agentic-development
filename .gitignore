@@ -38,3 +38,7 @@ Thumbs.db
 
 # Claude Code
 .mcp.json
+
+# Obsidian vault local config, not project source
+images/.obsidian/
+images/Excalidraw/
